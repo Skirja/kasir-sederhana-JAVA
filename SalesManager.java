@@ -148,9 +148,9 @@ public class SalesManager {
 
     public void generateSalesReport() {
         try (Scanner scanner = new Scanner(new File(FILE_NAME))) {
-            System.out.println("=========== SALES REPORT ===========");
-            System.out.println("Date\t\tQuantity\tAmount\t\tItem");
-            System.out.println("------------------------------------");
+            System.out.println("=============================== SALES REPORT =======================================");
+            System.out.println("Date\t\t\tQuantity\tAmount\t\tItem");
+            System.out.println("------------------------------------------------------------------------------------");
             String prevDate = "";
             String prevItem = "";
             int totalQuantity = 0;
@@ -166,9 +166,9 @@ public class SalesManager {
                 if (!date.equals(prevDate) || !itemName.equals(prevItem)) {
                     if (!prevDate.equals("")) {
                         if (prevItem.contains(":")) {
-                            System.out.printf("%s\t%d\t\tRp.%.2f\t%s\n", prevDate, totalQuantity, totalAmount, prevItem);
+                            System.out.printf("%s\t\s\s\s%d\t\tRp.%.2f\t%s\n", prevDate, totalQuantity, totalAmount, prevItem);
                         } else {
-                            System.out.printf("%s\t%d\t\tRp.%.2f\t%s%.1f;\n", prevDate, totalQuantity, totalAmount, prevItem, totalAmount / totalQuantity);
+                            System.out.printf("%s\t\s\s\s%d\t\tRp.%.2f\t%s%.1f;\n", prevDate, totalQuantity, totalAmount, prevItem, totalAmount / totalQuantity);
                         }
                     }
                     prevDate = date;
@@ -181,12 +181,12 @@ public class SalesManager {
             }
             if (!prevDate.equals("")) {
                 if (prevItem.contains(":")) {
-                    System.out.printf("%s\t%d\t\tRp.%.2f\t%s\n", prevDate, totalQuantity, totalAmount, prevItem);
+                    System.out.printf("%s\t\s\s\s%d\t\tRp.%.2f\t%s\n", prevDate, totalQuantity, totalAmount, prevItem);
                 } else {
-                    System.out.printf("%s\t%d\t\tRp.%.2f\t%s%.1f;\n", prevDate, totalQuantity, totalAmount, prevItem, totalAmount / totalQuantity);
+                    System.out.printf("%s\t\s\s\s%d\t\tRp.%.2f\t%s%.1f;\n", prevDate, totalQuantity, totalAmount, prevItem, totalAmount / totalQuantity);
                 }
             }
-            System.out.println("=====================================");
+            System.out.println("====================================================================================");
         } catch (FileNotFoundException e) {
             System.err.println("File not found: " + FILE_NAME);
         }
