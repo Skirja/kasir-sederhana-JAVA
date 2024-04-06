@@ -102,18 +102,19 @@ public class InventoryManager {
     // Method to generate stock report from CSV file
     public void generateStockReport() {
         try (Scanner scanner = new Scanner(new File(FILE_NAME))) {
-            System.out.println("=========== STOCK REPORT ===========");
-            System.out.printf("%-10s %-20s %-10s\n", "ID", "Item", "Stock");
-            System.out.println("-------------------------------------");
+            System.out.println("========== STOCK REPORT ==========");
+            System.out.printf("%-5s %-10s %-10s %-10s\n", "ID", "Item", "Harga", "Stock");
+            System.out.println("----------------------------------");
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 String[] parts = line.split(",");
                 String id = parts[0];
                 String name = parts[1];
+                String harga = parts[2];
                 int stock = Integer.parseInt(parts[4]);
-                System.out.printf("%-10s %-20s %-10s\n", id, name, stock);
+                System.out.printf("%-5s %-10s %-10s %-10s\n", id, name, harga, stock);
             }
-            System.out.println("=====================================");
+            System.out.println("==================================");
         } catch (FileNotFoundException e) {
             System.err.println("File not found: " + FILE_NAME);
         }

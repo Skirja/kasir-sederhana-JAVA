@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.io.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -54,6 +55,8 @@ public class Main {
 
     // Manager menu
     private static void managerMenu(Scanner scanner, InventoryManager inventoryManager, SalesManager salesManager) {
+        clearScreen();
+        
         int choice;
         do {
             System.out.println("\n===== MANAGER MENU =====");
@@ -70,22 +73,27 @@ public class Main {
             switch (choice) {
                 case 1:
                     // Tambah Barang
+                    clearScreen();
                     addItemMenu(scanner, inventoryManager);
                     break;
                 case 2:
                     // Hapus Barang
+                    clearScreen();
                     removeItemMenu(scanner, inventoryManager);
                     break;
                 case 3:
                     // Update Barang
+                    clearScreen();
                     updateItemMenu(scanner, inventoryManager);
                     break;
                 case 4:
                     // Laporan Penjualan
+                    clearScreen();
                     generateSalesReportMenu(salesManager);
                     break;
                 case 5:
                     // Laporan Stok
+                    clearScreen();
                     generateStockReportMenu(inventoryManager);
                     break;
                 case 6:
@@ -95,6 +103,18 @@ public class Main {
                     System.out.println("Pilihan tidak valid.");
             }
         } while (choice != 6);
+    }
+
+    private static void clearScreen() {
+        try {
+            if (System.getProperty("os.name").contains("Windows")) {
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            } else {
+                Runtime.getRuntime().exec("clear");
+            }
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     // Manager menu options
@@ -161,6 +181,7 @@ public class Main {
 
     // Cashier menu
     private static void cashierMenu(Scanner scanner, SalesManager salesManager, InventoryManager inventoryManager) {
+        clearScreen();
         int choice;
         do {
             System.out.println("\n===== CASHIER MENU =====");
@@ -177,22 +198,27 @@ public class Main {
             switch (choice) {
                 case 1:
                     // Tambah Barang ke Keranjang
+                    clearScreen();
                     addItemToCartMenu(scanner, salesManager, inventoryManager);
                     break;
                 case 2:
                     // Hapus Barang dari Keranjang
+                    clearScreen();
                     removeItemFromCartMenu(scanner, salesManager, inventoryManager);
                     break;
                 case 3:
                     // Hitung Total Harga
+                    clearScreen();
                     calculateTotalPriceMenu(salesManager);
                     break;
                 case 4:
                     // Hitung Kembalian
+                    clearScreen();
                     calculateChangeMenu(scanner, salesManager);
                     break;
                 case 5:
                     // Cetak Struk
+                    clearScreen();
                     printReceiptMenu(salesManager);
                     break;
                 case 6:
@@ -310,10 +336,8 @@ public class Main {
         // Implementasi untuk mencetak struk
         System.out.println("Menu: Cetak Struk");
         salesManager.printReceipt();
+        // Kosongkan keranjang setelah mencetak struk
+        salesManager.clearCart();
     }
 
 }
-
-
-// TAMBAHKAN HARGA PERITEM DI MENU STOK BARANG
-// SAAT TERJADI PERULANGAN BERSIHKANA CONSOLE (CLEAR SCREEN)
