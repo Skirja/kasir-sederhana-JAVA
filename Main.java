@@ -53,6 +53,15 @@ public class Main {
         scanner.close();
     }        
 
+    // Fungsi agar input hanya bisa angka
+    private static int getMenuChoice(Scanner scanner) {
+        while (!scanner.hasNextInt()) {
+            System.out.println("Pilihan harus berupa angka. Silakan coba lagi.");
+            scanner.next(); // Membuang input yang salah
+        }
+        return scanner.nextInt();
+    }
+    
     // Manager menu
     private static void managerMenu(Scanner scanner, InventoryManager inventoryManager, SalesManager salesManager) {
         clearScreen();
@@ -67,7 +76,7 @@ public class Main {
             System.out.println("5. Laporan Stok");
             System.out.println("6. Logout");
             System.out.print("Pilihan Anda: ");
-            choice = scanner.nextInt();
+            choice = getMenuChoice(scanner);
             scanner.nextLine(); // consume newline
 
             switch (choice) {
@@ -192,7 +201,7 @@ public class Main {
             System.out.println("5. Cetak Struk");
             System.out.println("6. Logout");
             System.out.print("Pilihan Anda: ");
-            choice = scanner.nextInt();
+            choice = getMenuChoice(scanner);
             scanner.nextLine(); // consume newline
 
             switch (choice) {
@@ -290,7 +299,7 @@ public class Main {
             System.out.println("Sisa Barang: " + salesManager.getQuantityInCart(item));
             System.out.print("Masukkan jumlah barang yang akan dihapus: ");
             int quantityToRemove = scanner.nextInt();
-            scanner.nextLine(); // consume newline
+            scanner.nextLine();
             if (quantityToRemove <= 0) {
                 System.out.println("Jumlah yang dimasukkan harus lebih besar dari 0.");
                 return;
@@ -316,16 +325,15 @@ public class Main {
         double totalPrice = salesManager.calculateTotalPrice();
         System.out.println("Total harga: Rp." + totalPrice);
     }
-    
-    
 
     private static void calculateChangeMenu(Scanner scanner, SalesManager salesManager) {
         // Implementasi untuk menghitung kembalian
         System.out.println("Menu: Hitung Kembalian");
-        System.out.print("Masukkan jumlah uang pembayaran: Rp.");
-        double payment = scanner.nextDouble();
+        double payment = SalesManager.getPaymentInput(scanner); // Gunakan metode getPaymentInput untuk memastikan masukan adalah angka
         double change = salesManager.calculateChange(payment);
-        if (change < 0) {
+        if (Double.isNaN(change)) {
+            System.out.println("Input tidak valid. Pastikan Anda memasukkan angka.");
+        } else if (change < 0) {
             System.out.println("Jumlah uang pembayaran tidak mencukupi.");
         } else {
             System.out.println("Kembalian: Rp." + change);

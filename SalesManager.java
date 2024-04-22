@@ -76,11 +76,24 @@ public class SalesManager {
     }
 
     // Method to calculate change
+    public static double getPaymentInput(Scanner scanner) {
+        while (true) {
+            System.out.print("Masukkan jumlah uang pembayaran: Rp.");
+            if (scanner.hasNextDouble()) {
+                return scanner.nextDouble();
+            } else {
+                System.out.println("Input tidak valid. Pastikan Anda memasukkan angka.");
+                scanner.next(); // Membuang input yang tidak valid
+            }
+        }
+    }
+
     public double calculateChange(double payment) {
         double totalPrice = calculateTotalPrice();
         return payment - totalPrice;
     }
-
+    
+    // Method to print receipt
     public void printReceipt() {
         if (cart.isEmpty()) {
             System.out.println("Cart is empty. No receipt generated.");
