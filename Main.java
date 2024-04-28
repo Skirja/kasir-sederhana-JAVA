@@ -7,109 +7,105 @@ public class Main {
         Authentication auth = new Authentication();
         InventoryManager inventoryManager = new InventoryManager();
         SalesManager salesManager = new SalesManager();
-        
+
         String role = null;
         int loginAttempts = 0;
 
-        // Main loop
         while (true) {
-            if (loginAttempts >= 3) { // Batas maksimum percobaan login
-                System.out.println("Batas maksimum percobaan login telah tercapai. Aplikasi akan keluar.");
-                System.exit(0); // Keluar dari program jika batas login tercapai
+            if (loginAttempts >= 3) {
+                System.out.println("Maximum login attempts reached. Exiting application.");
+                System.exit(0);
             }
 
-            System.out.println("\nSelamat datang di Aplikasi Kasir Minimarket");
-            System.out.print("Masukkan username: ");
+            System.out.println("\nWelcome to the Mini Market Cashier Application");
+            System.out.print("Enter username: ");
             String username = scanner.nextLine();
-            System.out.print("Masukkan password: ");
+            System.out.print("Enter password: ");
             String password = scanner.nextLine();
-    
-            // Authentication
+
             role = auth.authenticate(username, password);
-    
+
             if (role != null) {
-                System.out.println("Login berhasil sebagai " + role);
-                break; // Keluar dari loop setelah berhasil login
+                System.out.println("Login successful as " + role);
+                break;
             } else {
-                loginAttempts++; // Tambahkan jumlah percobaan login
-                System.out.println("Username atau password salah. Silakan coba lagi.");
-                System.out.println("Sisa percobaan login: " + (3 - loginAttempts)); // Tampilkan sisa percobaan login
+                loginAttempts++;
+                System.out.println("Invalid username or password. Please try again.");
+                System.out.println("Remaining login attempts: " + (3 - loginAttempts));
             }
         }
-    
-        // Main menu based on user role
+
         switch (role) {
             case "OWNER":
             case "MANAGER":
                 managerMenu(scanner, inventoryManager, salesManager);
                 break;
-            case "KASIR":
+            case "CASHIER":
                 cashierMenu(scanner, salesManager, inventoryManager);
                 break;
             default:
-                System.out.println("Peran tidak valid.");
+                System.out.println("Invalid role.");
         }
-    
-        scanner.close();
-    }        
 
-    // Fungsi agar input hanya bisa angka
-    private static int getMenuChoice(Scanner scanner) {
+        scanner.close();
+    }
+
+    private static int getIntInput(Scanner scanner, String prompt) {
+        System.out.print(prompt);
         while (!scanner.hasNextInt()) {
-            System.out.println("Pilihan harus berupa angka. Silakan coba lagi.");
-            scanner.next(); // Membuang input yang salah
+            System.out.println("Invalid input. Please enter an integer.");
+            scanner.next();
+            System.out.print(prompt);
         }
         return scanner.nextInt();
     }
-    
-    // Manager menu
+
+    private static double getDoubleInput(Scanner scanner, String prompt) {
+        System.out.print(prompt);
+        while (!scanner.hasNextDouble()) {
+            System.out.println("Invalid input. Please enter a number.");
+            scanner.next();
+            System.out.print(prompt);
+        }
+        return scanner.nextDouble();
+    }
+
     private static void managerMenu(Scanner scanner, InventoryManager inventoryManager, SalesManager salesManager) {
         clearScreen();
-        
+
         int choice;
         do {
             System.out.println("\n===== MANAGER MENU =====");
-            System.out.println("1. Tambah Barang");
-            System.out.println("2. Hapus Barang");
-            System.out.println("3. Update Barang");
-            System.out.println("4. Laporan Penjualan");
-            System.out.println("5. Laporan Stok");
+            System.out.println("1. Add Item");
+            System.out.println("2. Remove Item");
+            System.out.println("3. Update Item");
+            System.out.println("4. Sales Report");
+            System.out.println("5. Stock Report");
             System.out.println("6. Logout");
-            System.out.print("Pilihan Anda: ");
-            choice = getMenuChoice(scanner);
-            scanner.nextLine(); // consume newline
+            System.out.print("Choose an option: ");
+            choice = getIntInput(scanner, "");
 
             switch (choice) {
                 case 1:
-                    // Tambah Barang
-                    clearScreen();
                     addItemMenu(scanner, inventoryManager);
                     break;
                 case 2:
-                    // Hapus Barang
-                    clearScreen();
                     removeItemMenu(scanner, inventoryManager);
                     break;
                 case 3:
-                    // Update Barang
-                    clearScreen();
                     updateItemMenu(scanner, inventoryManager);
                     break;
                 case 4:
-                    // Laporan Penjualan
-                    clearScreen();
                     generateSalesReportMenu(salesManager);
                     break;
                 case 5:
-                    // Laporan Stok
-                    clearScreen();
                     generateStockReportMenu(inventoryManager);
                     break;
                 case 6:
-                    System.out.println("Logout berhasil.");
+                    System.out.println("Logout successful.");
                     break;
                 default:
-                    System.out.println("Pilihan tidak valid.");
+                    System.out.println("Invalid option.");
             }
         } while (choice != 6);
     }
@@ -126,226 +122,219 @@ public class Main {
         }
     }
 
-    // Manager menu options
     private static void addItemMenu(Scanner scanner, InventoryManager inventoryManager) {
-        // Implementasi untuk menambahkan barang ke inventaris
-        System.out.println("Menu: Tambah Barang");
-        System.out.print("Masukkan ID barang: ");
+        clearScreen();
+
+        System.out.println("Menu: Add Item");
+        System.out.print("Enter item ID: ");
         String id = scanner.nextLine();
-        System.out.print("Masukkan nama barang: ");
+        System.out.print("Enter item name: ");
         String name = scanner.nextLine();
-        System.out.print("Masukkan harga beli: ");
-        double purchasePrice = scanner.nextDouble();
-        System.out.print("Masukkan harga jual: ");
-        double sellingPrice = scanner.nextDouble();
-        System.out.print("Masukkan stok: ");
-        int stock = scanner.nextInt();
-        System.out.print("Masukkan batas minimum stok: ");
-        int minStock = scanner.nextInt();
+        System.out.print("Enter purchase price: ");
+        double purchasePrice = getDoubleInput(scanner, "");
+        System.out.print("Enter selling price: ");
+        double sellingPrice = getDoubleInput(scanner, "");
+        System.out.print("Enter stock: ");
+        int stock = getIntInput(scanner, "");
+        System.out.print("Enter minimum stock: ");
+        int minStock = getIntInput(scanner, "");
+
         inventoryManager.addItem(new Item(id, name, purchasePrice, sellingPrice, stock, minStock));
+        System.out.println("Item added successfully.");
     }
-    
+
     private static void removeItemMenu(Scanner scanner, InventoryManager inventoryManager) {
-        // Implementasi untuk menghapus barang dari inventaris
-        System.out.println("Menu: Hapus Barang");
-        System.out.print("Masukkan ID barang yang akan dihapus: ");
+        clearScreen();
+
+        System.out.println("Menu: Remove Item");
+        System.out.print("Enter item ID: ");
         String itemId = scanner.nextLine();
+
         inventoryManager.removeItem(itemId);
+        System.out.println("Item removed successfully.");
     }
-    
+
     private static void updateItemMenu(Scanner scanner, InventoryManager inventoryManager) {
-        // Implementasi untuk mengupdate detail barang
-        System.out.println("Menu: Update Barang");
-        System.out.print("Masukkan ID barang yang akan diupdate: ");
+        clearScreen();
+
+        System.out.println("Menu: Update Item");
+        System.out.print("Enter item ID: ");
         String itemId = scanner.nextLine();
+
         Item itemToUpdate = inventoryManager.searchItem(itemId);
         if (itemToUpdate != null) {
-            System.out.print("Masukkan nama barang baru: ");
+            System.out.print("Enter new item name: ");
             String name = scanner.nextLine();
-            System.out.print("Masukkan harga beli baru: ");
-            double purchasePrice = scanner.nextDouble();
-            System.out.print("Masukkan harga jual baru: ");
-            double sellingPrice = scanner.nextDouble();
-            System.out.print("Masukkan stok baru: ");
-            int stock = scanner.nextInt();
-            System.out.print("Masukkan batas minimum stok baru: ");
-            int minStock = scanner.nextInt();
+            System.out.print("Enter new purchase price: ");
+            double purchasePrice = getDoubleInput(scanner, "");
+            System.out.print("Enter new selling price: ");
+            double sellingPrice = getDoubleInput(scanner, "");
+            System.out.print("Enter new stock: ");
+            int stock = getIntInput(scanner, "");
+            System.out.print("Enter new minimum stock: ");
+            int minStock = getIntInput(scanner, "");
+
             inventoryManager.updateItem(itemId, name, purchasePrice, sellingPrice, stock, minStock);
+            System.out.println("Item updated successfully.");
         } else {
-            System.out.println("Barang tidak ditemukan.");
+            System.out.println("Item not found.");
         }
     }
-    
+
     private static void generateSalesReportMenu(SalesManager salesManager) {
-        // Implementasi untuk menampilkan laporan penjualan dalam bentuk tabel
-        System.out.println("Menu: Laporan Penjualan");
+        clearScreen();
+
+        System.out.println("Menu: Sales Report");
         salesManager.generateSalesReport();
     }
-    
+
     private static void generateStockReportMenu(InventoryManager inventoryManager) {
-        // Implementasi untuk menampilkan laporan stok barang dari file CSV
-        System.out.println("Menu: Laporan Stok");
+        clearScreen();
+
+        System.out.println("Menu: Stock Report");
         inventoryManager.generateStockReport();
     }
 
-    // Cashier menu
     private static void cashierMenu(Scanner scanner, SalesManager salesManager, InventoryManager inventoryManager) {
         clearScreen();
+
         int choice;
         do {
             System.out.println("\n===== CASHIER MENU =====");
-            System.out.println("1. Tambah Barang ke Keranjang");
-            System.out.println("2. Hapus Barang dari Keranjang");
-            System.out.println("3. Hitung Total Harga");
-            System.out.println("4. Hitung Kembalian");
-            System.out.println("5. Cetak Struk");
+            System.out.println("1. Add Item to Cart");
+            System.out.println("2. Remove Item from Cart");
+            System.out.println("3. Calculate Total Price");
+            System.out.println("4. Calculate Change");
+            System.out.println("5. Print Receipt");
             System.out.println("6. Logout");
-            System.out.print("Pilihan Anda: ");
-            choice = getMenuChoice(scanner);
-            scanner.nextLine(); // consume newline
+            System.out.print("Choose an option: ");
+            choice = getIntInput(scanner, "");
 
             switch (choice) {
                 case 1:
-                    // Tambah Barang ke Keranjang
-                    clearScreen();
                     addItemToCartMenu(scanner, salesManager, inventoryManager);
                     break;
                 case 2:
-                    // Hapus Barang dari Keranjang
-                    clearScreen();
                     removeItemFromCartMenu(scanner, salesManager, inventoryManager);
                     break;
                 case 3:
-                    // Hitung Total Harga
-                    clearScreen();
                     calculateTotalPriceMenu(salesManager);
                     break;
                 case 4:
-                    // Hitung Kembalian
-                    clearScreen();
                     calculateChangeMenu(scanner, salesManager);
                     break;
                 case 5:
-                    // Cetak Struk
-                    clearScreen();
                     printReceiptMenu(salesManager);
                     break;
                 case 6:
-                    System.out.println("Logout berhasil.");
+                    System.out.println("Logout successful.");
                     break;
                 default:
-                    System.out.println("Pilihan tidak valid.");
+                    System.out.println("Invalid option.");
             }
         } while (choice != 6);
     }
 
     private static void addItemToCartMenu(Scanner scanner, SalesManager salesManager, InventoryManager inventoryManager) {
-        // Implementasi untuk menambahkan barang ke keranjang saat transaksi
-        System.out.println("Menu: Tambah Barang ke Keranjang");
-    
-        // Masukkan ID barang
-        System.out.print("Masukkan ID barang: ");
+        clearScreen();
+
+        System.out.println("Menu: Add Item to Cart");
+        System.out.print("Enter item ID: ");
         String itemId = scanner.nextLine();
-    
-        // Cari barang berdasarkan ID
+
         Item item = inventoryManager.searchItem(itemId);
         if (item != null) {
-            // Barang ditemukan, tampilkan informasi barang
+            System.out.println("Item details:");
+            System.out.println("Name: " + item.getName());
+            System.out.println("Stock: " + item.getStock());
 
-            System.out.println("=================================");
-            System.out.println("---Informasi Barang---");
-            System.out.println("Nama: " + item.getName());
-            System.out.println("Stok: " + item.getStock());
-            System.out.println("=================================");
-    
-            // Masukkan jumlah yang akan dibeli
-            System.out.print("Masukkan jumlah yang akan dibeli: ");
-            int quantity = scanner.nextInt();
-            scanner.nextLine(); // consume newline
-    
-            // Cek ketersediaan stok
+            System.out.print("Enter quantity: ");
+            int quantity = getIntInput(scanner, "");
+
             if (quantity <= 0) {
-                System.out.println("Jumlah yang dimasukkan harus lebih besar dari 0.");
+                System.out.println("Invalid quantity.");
                 return;
             }
-    
+
             if (quantity > item.getStock()) {
-                System.out.println("Stok tidak mencukupi.");
+                System.out.println("Not enough stock.");
                 return;
             }
-    
-            // Barang ditambahkan ke keranjang
+
             salesManager.addItemToCart(item, quantity);
-    
-            // Update stok barang
             item.setStock(item.getStock() - quantity);
             inventoryManager.updateItem(item.getId(), item.getName(), item.getPurchasePrice(), item.getSellingPrice(), item.getStock(), item.getMinStock());
-            System.out.println("Stok barang telah berhasil diperbarui.");
+            System.out.println("Item added to cart successfully.");
         } else {
-            System.out.println("Barang dengan ID tersebut tidak ditemukan.");
+            System.out.println("Item not found.");
         }
     }
 
     private static void removeItemFromCartMenu(Scanner scanner, SalesManager salesManager, InventoryManager inventoryManager) {
-        // Implementasi untuk menghapus barang dari keranjang
-        System.out.println("Menu: Hapus Barang dari Keranjang");
-        System.out.print("Masukkan ID barang yang akan dihapus dari keranjang: ");
+        clearScreen();
+
+        System.out.println("Menu: Remove Item from Cart");
+        System.out.print("Enter item ID: ");
         String itemId = scanner.nextLine();
+
         Item item = inventoryManager.searchItem(itemId);
         if (item != null) {
-            // Tampilkan informasi barang yang akan dihapus
-            System.out.println("Informasi Barang yang akan dihapus:");
-            System.out.println("Nama: " + item.getName());
-            System.out.println("Sisa Barang: " + salesManager.getQuantityInCart(item));
-            System.out.print("Masukkan jumlah barang yang akan dihapus: ");
-            int quantityToRemove = scanner.nextInt();
-            scanner.nextLine();
+            System.out.println("Item details:");
+            System.out.println("Name: " + item.getName());
+            System.out.println("Quantity in cart: " + salesManager.getQuantityInCart(item));
+
+            System.out.print("Enter quantity to remove: ");
+            int quantityToRemove = getIntInput(scanner, "");
+
             if (quantityToRemove <= 0) {
-                System.out.println("Jumlah yang dimasukkan harus lebih besar dari 0.");
+                System.out.println("Invalid quantity.");
                 return;
             }
+
             if (quantityToRemove > salesManager.getQuantityInCart(item)) {
-                System.out.println("Jumlah barang yang dimasukkan melebihi jumlah barang di keranjang.");
+                System.out.println("Invalid quantity.");
                 return;
             }
-            // Hapus barang dari keranjang
+
             salesManager.removeItemFromCart(item, quantityToRemove);
-            // Tambahkan kembali stok barang yang dihapus dari keranjang
             item.setStock(item.getStock() + quantityToRemove);
             inventoryManager.updateItem(item.getId(), item.getName(), item.getPurchasePrice(), item.getSellingPrice(), item.getStock(), item.getMinStock());
-            System.out.println("Stok barang telah berhasil diperbarui.");
+            System.out.println("Item removed from cart successfully.");
         } else {
-            System.out.println("Barang dengan ID tersebut tidak ditemukan.");
+            System.out.println("Item not found.");
         }
     }
-    
+
     private static void calculateTotalPriceMenu(SalesManager salesManager) {
-        // Implementasi untuk menghitung total harga
-        System.out.println("Menu: Hitung Total Harga");
+        clearScreen();
+
+        System.out.println("Menu: Calculate Total Price");
         double totalPrice = salesManager.calculateTotalPrice();
-        System.out.println("Total harga: Rp." + totalPrice);
+        System.out.println("Total price: " + totalPrice);
     }
 
     private static void calculateChangeMenu(Scanner scanner, SalesManager salesManager) {
-        // Implementasi untuk menghitung kembalian
-        System.out.println("Menu: Hitung Kembalian");
-        double payment = SalesManager.getPaymentInput(scanner); // Gunakan metode getPaymentInput untuk memastikan masukan adalah angka
+        clearScreen();
+
+        System.out.println("Menu: Calculate Change");
+        System.out.print("Enter payment: ");
+        double payment = getDoubleInput(scanner, "");
+
         double change = salesManager.calculateChange(payment);
         if (Double.isNaN(change)) {
-            System.out.println("Input tidak valid. Pastikan Anda memasukkan angka.");
+            System.out.println("Invalid input.");
         } else if (change < 0) {
-            System.out.println("Jumlah uang pembayaran tidak mencukupi.");
+            System.out.println("Insufficient payment.");
         } else {
-            System.out.println("Kembalian: Rp." + change);
+            System.out.println("Change: " + change);
         }
     }
 
     private static void printReceiptMenu(SalesManager salesManager) {
-        // Implementasi untuk mencetak struk
-        System.out.println("Menu: Cetak Struk");
+        clearScreen();
+
+        System.out.println("Menu: Print Receipt");
         salesManager.printReceipt();
-        // Kosongkan keranjang setelah mencetak struk
         salesManager.clearCart();
     }
-
 }
