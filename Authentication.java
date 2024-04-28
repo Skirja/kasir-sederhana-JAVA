@@ -1,42 +1,53 @@
-public class Authentication {
-    private static final String OWNER_USERNAME = "OWNER1";
-    private static final String OWNER_PASSWORD = "SAYAOWNER";
-    private static final String MANAGER_USERNAME = "MANAGER1";
-    private static final String MANAGER_PASSWORD = "SAYAMANAGER";
-    private static final String KASIR_USERNAME = "KASIR1";
-    private static final String KASIR_PASSWORD = "SAYAKASIR";
+import java.util.HashMap;
+import java.util.Map;
 
-    private boolean authenticated;
+public class Authentication {
+    private static final int MAX_LOGIN_ATTEMPTS = 3; // Maximum login attempts
     private int loginAttempts;
-    private static final int MAX_LOGIN_ATTEMPTS = 3; // Batas maksimum gagal login
+    private boolean authenticated;
+
+    private final Map<String, String> users = new HashMap<>();
 
     public Authentication() {
         this.authenticated = false;
         this.loginAttempts = 0;
+
+        // Initialize user accounts
+        users.put("OWNER1", "SAYAOWNER");
+        users.put("MANAGER1", "SAYAMANAGER");
+        users.put("KASIR1", "SAYAKASIR");
     }
 
     public String authenticate(String username, String password) {
         if (loginAttempts >= MAX_LOGIN_ATTEMPTS) {
-            System.out.println("Batas maksimum percobaan login telah tercapai. Aplikasi akan keluar.");
-            System.exit(0); // Keluar dari program jika batas login tercapai
+            System.out.println("Maximum login attempts reached. Exiting application.");
+            System.exit(0); // Exit the program if maximum login attempts are reached
         }
 
         if (!authenticated) {
-            if (username.equals(OWNER_USERNAME) && password.equals(OWNER_PASSWORD)) {
+            if (users.containsKey(username) && users.get(username).equals(password)) {
                 authenticated = true;
-                return "OWNER";
-            } else if (username.equals(MANAGER_USERNAME) && password.equals(MANAGER_PASSWORD)) {
-                authenticated = true;
-                return "MANAGER";
-            } else if (username.equals(KASIR_USERNAME) && password.equals(KASIR_PASSWORD)) {
-                authenticated = true;
-                return "KASIR";
+                return getUserRole(username);
             } else {
-                loginAttempts++; // Tambahkan jumlah percobaan login
+                loginAttempts++; // Increment login attempts
                 return null;
             }
         } else {
             return "Already Authenticated";
+        }
+    }
+
+    // Map usernames to roles
+    private String getUserRole(String username) {
+        switch (username) {
+            case "OWNER1":
+                return "OWNER";
+            case "MANAGER1":
+                return "MANAGER";
+            case "KASIR1":
+                return "KASIR";
+            default:
+                return null;
         }
     }
 }
